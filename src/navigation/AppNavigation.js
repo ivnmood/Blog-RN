@@ -11,8 +11,6 @@ import {HeaderButtons, Item} from 'react-navigation-header-buttons'
 import {AppHeaderIcon} from "../components/AppHeaderIcon";
 import {Ionicons} from "@expo/vector-icons";
 import {THEME} from "../theme";
-
-
 const MainStack = createStackNavigator();
 const BookedStack = createStackNavigator();
 const AboutStack = createStackNavigator();
@@ -57,9 +55,30 @@ const MainStackScreen = ({navigation}) => (
     </MainStack.Navigator>
 )
 
-const BookedStackScreen = () => (
-    <BookedStack.Navigator>
-        <BookedStack.Screen name='BookedScreen' component={BookedScreen} options={{title: 'Booked Screen'}}/>
+const BookedStackScreen = ({navigation}) => (
+    <BookedStack.Navigator >
+        <BookedStack.Screen name='BookedScreen' component={BookedScreen} options={{
+            title: 'Booked Screen',
+            headerLeft: () => (
+                <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
+                    <Item title='Take photo'
+                          iconName='ios-menu'
+                          onPress={() => navigation.toggleDrawer()}/>
+                </HeaderButtons>),
+        }}/>
+        <MainStack.Screen name='PostScreen' component={PostScreen} options={({route}) => ({
+            title: route.params.name,
+            headerRight: () => {
+                const booked = route.params.booked
+                const iconName = booked ? 'ios-star' : 'ios-star-outline'
+                return (
+                    <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
+                        <Item title='Take photo'
+                              iconName={iconName}
+                              onPress={() => console.log('press favorites')}/>
+                    </HeaderButtons>)
+            },
+        })}/>
     </BookedStack.Navigator>
 )
 const AboutStackScreen = () => (
