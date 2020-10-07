@@ -8,6 +8,8 @@ import {BookedScreen} from "../screens/BookedScreen";
 import {PostScreen} from "../screens/PostScreen";
 import {AboutScreen} from "../screens/AboutScreen";
 import {Text, Button} from "react-native";
+import {HeaderButtons, Item} from 'react-navigation-header-buttons'
+import {AppHeaderIcon} from "../components/AppHeaderIcon";
 
 
 const MainStack = createStackNavigator();
@@ -19,17 +21,20 @@ const Tabs = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
 
-
-
 const MainStackScreen = ({navigation}) => (
     <MainStack.Navigator>
         <MainStack.Screen name='MainScreen'
                           component={MainScreen}
                           options={{
                               title: 'Main Screen',
-                              headerLeft: () => <Button   onPress={() => navigation.toggleDrawer()}
-                                                           title="Info"
-                                                           color="#00cc00"/>
+                              headerRight: () => (
+                                  <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
+                                      <Item title='Take photo' iconName='ios-camera' onPress={() => {}}/>
+                                  </HeaderButtons>),
+                              headerLeft: () => (
+                                  <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
+                                      <Item title='Take photo' iconName='ios-menu' onPress={() => navigation.toggleDrawer()}/>
+                                  </HeaderButtons>),
                           }}/>
         <MainStack.Screen name='PostScreen' component={PostScreen} options={({route}) => ({
             title: route.params.name
