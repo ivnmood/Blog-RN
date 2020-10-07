@@ -9,7 +9,8 @@ export const MainScreen = ({navigation}) => {
     const openPost = post => {
         navigation.push('PostScreen', {
             name: new Date(post.date).toLocaleDateString(),
-            postId: post.id
+            postId: post.id,
+            booked: post.booked
         })
     }
 

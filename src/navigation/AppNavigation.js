@@ -1,15 +1,16 @@
+import React from "react";
 import {NavigationContainer} from '@react-navigation/native'
 import {createStackNavigator} from '@react-navigation/stack'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import {createDrawerNavigator} from '@react-navigation/drawer'
-import React from "react";
 import {MainScreen} from "../screens/MainScreen";
 import {BookedScreen} from "../screens/BookedScreen";
 import {PostScreen} from "../screens/PostScreen";
 import {AboutScreen} from "../screens/AboutScreen";
-import {Text, Button} from "react-native";
 import {HeaderButtons, Item} from 'react-navigation-header-buttons'
 import {AppHeaderIcon} from "../components/AppHeaderIcon";
+import {Ionicons} from "@expo/vector-icons";
+import {THEME} from "../theme";
 
 
 const MainStack = createStackNavigator();
@@ -29,15 +30,29 @@ const MainStackScreen = ({navigation}) => (
                               title: 'Main Screen',
                               headerRight: () => (
                                   <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
-                                      <Item title='Take photo' iconName='ios-camera' onPress={() => {}}/>
+                                      <Item title='Take photo'
+                                            iconName='ios-camera'
+                                            onPress={() => console.log('press camera')}/>
                                   </HeaderButtons>),
                               headerLeft: () => (
                                   <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
-                                      <Item title='Take photo' iconName='ios-menu' onPress={() => navigation.toggleDrawer()}/>
+                                      <Item title='Take photo'
+                                            iconName='ios-menu'
+                                            onPress={() => navigation.toggleDrawer()}/>
                                   </HeaderButtons>),
                           }}/>
         <MainStack.Screen name='PostScreen' component={PostScreen} options={({route}) => ({
-            title: route.params.name
+            title: route.params.name,
+            headerRight: () => {
+                const booked = route.params.booked
+                const iconName = booked ? 'ios-star' : 'ios-star-outline'
+                return (
+                    <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
+                        <Item title='Take photo'
+                              iconName={iconName}
+                              onPress={() => console.log('press favorites')}/>
+                    </HeaderButtons>)
+            },
         })}/>
     </MainStack.Navigator>
 )
@@ -60,9 +75,23 @@ const PostStackScreen = () => (
 )
 
 const TabsScreen = () => (
-    <Tabs.Navigator>
-        <Tabs.Screen name='Tab1' component={MainStackScreen}/>
-        <Tabs.Screen name='Tab2' component={BookedStackScreen}/>
+    <Tabs.Navigator    screenOptions={({ route }) => ({
+        tabBarIcon: ({ color }) => {
+            let iconName;
+            if (route.name === 'Post') {
+                iconName = 'ios-albums'
+            } else if (route.name === 'Booked') {
+                iconName = 'ios-star'
+            }
+            return <Ionicons name={iconName} size={25} color={color} />;
+        },
+    })}
+                       tabBarOptions={{
+                           activeTintColor: 'black',
+                           inactiveTintColor: 'gray',
+                       }}>
+        <Tabs.Screen name='Post' component={MainStackScreen}/>
+        <Tabs.Screen name='Booked' component={BookedStackScreen}/>
     </Tabs.Navigator>
 )
 
