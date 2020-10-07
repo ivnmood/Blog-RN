@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
 import {AppLoading} from 'expo';
 import {bootstrap} from "./src/bootstrap";
 import {AppNavigation} from "./src/navigation/AppNavigation";
@@ -15,10 +14,6 @@ export default function App() {
             onError={error => console.log(error)}
         />
     }
-
-    // const ScreenContainer = ({ children }) => (
-    //     <View style={styles.container}>{children}</View>
-    // );
 
     return <AppNavigation/>
 }

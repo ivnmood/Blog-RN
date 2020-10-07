@@ -1,11 +1,9 @@
 import React from 'react'
-import {View, Text, StyleSheet, FlatList} from "react-native";
 import {DATA} from "../data";
-import {Post} from "../components/Post";
+import {PostList} from "../components/PostList";
 
 
 export const BookedScreen = ({navigation}) => {
-
     const openPost = post => {
         navigation.push('PostScreen', {
             name: new Date(post.date).toLocaleDateString(),
@@ -13,17 +11,8 @@ export const BookedScreen = ({navigation}) => {
             booked: post.booked
         })
     }
+   const data = DATA.filter(post => post.booked)
 
-    return <View style={styles.wrapper}>
-        <FlatList
-            data={DATA.filter(post => post.booked)}
-            keyExtractor={post => post.id.toString()}
-            renderItem={({item}) => <Post post={item} onOpen={openPost}/>}/>
-    </View>
+    return <PostList onOpen={openPost} date={data}/>
 }
 
-const styles = StyleSheet.create({
-    wrapper: {
-        padding: 10
-    }
-})

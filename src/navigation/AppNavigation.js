@@ -15,10 +15,27 @@ const MainStack = createStackNavigator();
 const BookedStack = createStackNavigator();
 const AboutStack = createStackNavigator();
 const PostStack = createStackNavigator();
-
 const Tabs = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
+
+const menu = (navigation) => (
+    <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
+        <Item title='menu'
+              iconName='ios-menu'
+              onPress={() => navigation.toggleDrawer()}/>
+    </HeaderButtons>)
+
+const booked = (route) => {
+    const booked = route.params.booked
+    const iconName = booked ? 'ios-star' : 'ios-star-outline'
+    return (
+<HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
+    <Item title='booked'
+          iconName={iconName}
+          onPress={() => console.log('press favorites')}/>
+</HeaderButtons>)
+}
 
 const MainStackScreen = ({navigation}) => (
     <MainStack.Navigator>
@@ -32,25 +49,11 @@ const MainStackScreen = ({navigation}) => (
                                             iconName='ios-camera'
                                             onPress={() => console.log('press camera')}/>
                                   </HeaderButtons>),
-                              headerLeft: () => (
-                                  <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
-                                      <Item title='Take photo'
-                                            iconName='ios-menu'
-                                            onPress={() => navigation.toggleDrawer()}/>
-                                  </HeaderButtons>),
+                              headerLeft: () => menu(navigation)
                           }}/>
         <MainStack.Screen name='PostScreen' component={PostScreen} options={({route}) => ({
             title: route.params.name,
-            headerRight: () => {
-                const booked = route.params.booked
-                const iconName = booked ? 'ios-star' : 'ios-star-outline'
-                return (
-                    <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
-                        <Item title='Take photo'
-                              iconName={iconName}
-                              onPress={() => console.log('press favorites')}/>
-                    </HeaderButtons>)
-            },
+            headerRight: () => booked(route)
         })}/>
     </MainStack.Navigator>
 )
@@ -59,31 +62,20 @@ const BookedStackScreen = ({navigation}) => (
     <BookedStack.Navigator >
         <BookedStack.Screen name='BookedScreen' component={BookedScreen} options={{
             title: 'Booked Screen',
-            headerLeft: () => (
-                <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
-                    <Item title='Take photo'
-                          iconName='ios-menu'
-                          onPress={() => navigation.toggleDrawer()}/>
-                </HeaderButtons>),
+            headerLeft: () => menu(navigation),
         }}/>
-        <MainStack.Screen name='PostScreen' component={PostScreen} options={({route}) => ({
+        <BookedStack.Screen name='PostScreen' component={PostScreen} options={({route}) => ({
             title: route.params.name,
-            headerRight: () => {
-                const booked = route.params.booked
-                const iconName = booked ? 'ios-star' : 'ios-star-outline'
-                return (
-                    <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
-                        <Item title='Take photo'
-                              iconName={iconName}
-                              onPress={() => console.log('press favorites')}/>
-                    </HeaderButtons>)
-            },
+            headerRight: () => booked(route)
         })}/>
     </BookedStack.Navigator>
 )
-const AboutStackScreen = () => (
+const AboutStackScreen = ({navigation}) => (
     <AboutStack.Navigator>
-        <AboutStack.Screen name='AboutScreen' component={AboutScreen} options={{title: 'About Screen'}}/>
+        <AboutStack.Screen name='AboutScreen' component={AboutScreen} options={{
+            title: 'About Screen',
+            headerLeft: () => menu(navigation)
+        }}/>
     </AboutStack.Navigator>
 )
 
