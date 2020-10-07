@@ -8,7 +8,7 @@ export const MainScreen = ({navigation}) => {
 
     const openPost = post => {
         navigation.push('PostScreen', {
-            name: post.date,
+            name: new Date(post.date).toLocaleDateString(),
             postId: post.id
         })
     }
