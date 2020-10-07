@@ -10,32 +10,46 @@ import {AboutScreen} from "../screens/AboutScreen";
 import {HeaderButtons, Item} from 'react-navigation-header-buttons'
 import {AppHeaderIcon} from "../components/AppHeaderIcon";
 import {Ionicons} from "@expo/vector-icons";
-import {THEME} from "../theme";
+import {CreateScreen} from "../screens/CreateScreen";
+
 const MainStack = createStackNavigator();
 const BookedStack = createStackNavigator();
 const AboutStack = createStackNavigator();
-const PostStack = createStackNavigator();
+const CreateStack = createStackNavigator();
 const Tabs = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
 
-const menu = (navigation) => (
+const menu = navigation => (
     <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
         <Item title='menu'
               iconName='ios-menu'
               onPress={() => navigation.toggleDrawer()}/>
     </HeaderButtons>)
 
-const booked = (route) => {
+const booked = route => {
     const booked = route.params.booked
     const iconName = booked ? 'ios-star' : 'ios-star-outline'
     return (
-<HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
-    <Item title='booked'
-          iconName={iconName}
-          onPress={() => console.log('press favorites')}/>
-</HeaderButtons>)
+        <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
+            <Item title='booked'
+                  iconName={iconName}
+                  onPress={() => console.log('press favorites')}/>
+        </HeaderButtons>)
 }
+
+const photo = navigation => (
+    <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
+        <Item title='Take photo'
+              iconName='ios-camera'
+              onPress={() => {
+                  navigation.navigate("CreateScreen",
+                      {
+                          screen: "CreateScreen"
+                      })
+              }}/>
+    </HeaderButtons>)
+
 
 const MainStackScreen = ({navigation}) => (
     <MainStack.Navigator>
@@ -43,12 +57,7 @@ const MainStackScreen = ({navigation}) => (
                           component={MainScreen}
                           options={{
                               title: 'Main Screen',
-                              headerRight: () => (
-                                  <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
-                                      <Item title='Take photo'
-                                            iconName='ios-camera'
-                                            onPress={() => console.log('press camera')}/>
-                                  </HeaderButtons>),
+                              headerRight: () => photo(navigation),
                               headerLeft: () => menu(navigation)
                           }}/>
         <MainStack.Screen name='PostScreen' component={PostScreen} options={({route}) => ({
@@ -59,7 +68,7 @@ const MainStackScreen = ({navigation}) => (
 )
 
 const BookedStackScreen = ({navigation}) => (
-    <BookedStack.Navigator >
+    <BookedStack.Navigator>
         <BookedStack.Screen name='BookedScreen' component={BookedScreen} options={{
             title: 'Booked Screen',
             headerLeft: () => menu(navigation),
@@ -79,28 +88,31 @@ const AboutStackScreen = ({navigation}) => (
     </AboutStack.Navigator>
 )
 
-const PostStackScreen = () => (
-    <PostStack.Navigator>
-        <PostStack.Screen name='PostScreen' component={PostScreen} options={{title: 'Post Screen'}}/>
-    </PostStack.Navigator>
+const CreateStackScreen = ({navigation}) => (
+    <CreateStack.Navigator>
+        <CreateStack.Screen name='CreateScreen' component={CreateScreen} options={{
+            title: 'Create Screen',
+            headerLeft: () => menu(navigation)
+        }}/>
+    </CreateStack.Navigator>
 )
 
 const TabsScreen = () => (
-    <Tabs.Navigator    screenOptions={({ route }) => ({
-        tabBarIcon: ({ color }) => {
+    <Tabs.Navigator screenOptions={({route}) => ({
+        tabBarIcon: ({color}) => {
             let iconName;
             if (route.name === 'Post') {
                 iconName = 'ios-albums'
             } else if (route.name === 'Booked') {
                 iconName = 'ios-star'
             }
-            return <Ionicons name={iconName} size={25} color={color} />;
+            return <Ionicons name={iconName} size={25} color={color}/>;
         },
     })}
-                       tabBarOptions={{
-                           activeTintColor: 'black',
-                           inactiveTintColor: 'gray',
-                       }}>
+                    tabBarOptions={{
+                        activeTintColor: 'black',
+                        inactiveTintColor: 'gray',
+                    }}>
         <Tabs.Screen name='Post' component={MainStackScreen}/>
         <Tabs.Screen name='Booked' component={BookedStackScreen}/>
     </Tabs.Navigator>
@@ -111,8 +123,9 @@ export const AppNavigation = () => {
     return (
         <NavigationContainer>
             <Drawer.Navigator>
-                <Drawer.Screen name='Tabs' component={TabsScreen}/>
+                <Drawer.Screen name='Main' component={TabsScreen}/>
                 <Drawer.Screen name='About' component={AboutStackScreen}/>
+                <Drawer.Screen name='New Post' component={CreateStackScreen}/>
             </Drawer.Navigator>
         </NavigationContainer>)
 }
