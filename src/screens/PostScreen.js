@@ -1,16 +1,31 @@
-import React from 'react'
+import React, {useCallback, useEffect} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
 import {View, Text, StyleSheet, Image, Button, ScrollView, Alert} from "react-native";
-import {DATA} from "../data";
 import {THEME} from "../theme";
+import {removePost, toggleBooked} from "../store/actions/post";
 
 
-export const PostScreen  = ({route}) => {
-
+export const PostScreen = ({route, navigation}) => {
+    const dispatch = useDispatch()
     const {postId} = route.params
 
-    const post = DATA.find(p => p.id === postId)
+    const post = useSelector(state => state.post.allPosts.find(p => p.id === postId))
 
-    const removePost = () => {
+    const booked = useSelector(state => state.post.bookedPosts.some(post => post.id === postId))
+
+    useEffect(() => {
+        navigation.setParams({booked})
+    }, [booked])
+
+    const toggleHandler = useCallback(() => {
+        dispatch(toggleBooked(postId))
+    }, [dispatch, postId])
+
+    useEffect(() => {
+        navigation.setParams({toggleHandler})
+    }, [toggleHandler])
+
+    const removeHandler = () => {
         Alert.alert(
             "Delete post",
             "Do you want delete post?",
@@ -19,10 +34,19 @@ export const PostScreen  = ({route}) => {
                     text: "Cancel",
                     style: "cancel"
                 },
-                { text: "OK", style: 'destructive', onPress: () => console.log("OK Pressed") }
+                {
+                    text: "OK", style: 'destructive', onPress: () => {
+                        navigation.navigate('MainScreen')
+                        dispatch(removePost(postId))
+                    }
+                }
             ],
-            { cancelable: false }
+            {cancelable: false}
         );
+    }
+
+    if (!post) {
+        return null
     }
 
     return <ScrollView style={styles.center}>
@@ -30,7 +54,7 @@ export const PostScreen  = ({route}) => {
         <View style={styles.textWrap}>
             <Text style={styles.title}>{post.text}</Text>
         </View>
-        <Button title='Delete' color={THEME.DANGER_COLOR} onPress={removePost}/>
+        <Button title='Delete' color={THEME.DANGER_COLOR} onPress={removeHandler}/>
     </ScrollView>
 }
 

@@ -12,6 +12,9 @@ import {AppHeaderIcon} from "../components/AppHeaderIcon";
 import {Ionicons} from "@expo/vector-icons";
 import {CreateScreen} from "../screens/CreateScreen";
 
+
+
+
 const MainStack = createStackNavigator();
 const BookedStack = createStackNavigator();
 const AboutStack = createStackNavigator();
@@ -27,14 +30,15 @@ const menu = navigation => (
               onPress={() => navigation.toggleDrawer()}/>
     </HeaderButtons>)
 
-const booked = route => {
+const booked = (route, navigation) => {
+    const toggleHandler = route.params.toggleHandler
     const booked = route.params.booked
     const iconName = booked ? 'ios-star' : 'ios-star-outline'
     return (
         <HeaderButtons HeaderButtonComponent={AppHeaderIcon}>
             <Item title='booked'
                   iconName={iconName}
-                  onPress={() => console.log('press favorites')}/>
+                  onPress={toggleHandler}/>
         </HeaderButtons>)
 }
 
@@ -64,6 +68,10 @@ const MainStackScreen = ({navigation}) => (
             title: route.params.name,
             headerRight: () => booked(route)
         })}/>
+        <MainStack.Screen name='CreateScreen' component={CreateScreen} options={{
+            title: 'Create Screen',
+            headerLeft: () => menu(navigation)
+        }}/>
     </MainStack.Navigator>
 )
 
@@ -75,7 +83,7 @@ const BookedStackScreen = ({navigation}) => (
         }}/>
         <BookedStack.Screen name='PostScreen' component={PostScreen} options={({route}) => ({
             title: route.params.name,
-            headerRight: () => booked(route)
+            headerRight: () => booked(route, navigation)
         })}/>
     </BookedStack.Navigator>
 )
