@@ -30,7 +30,7 @@ const menu = navigation => (
               onPress={() => navigation.toggleDrawer()}/>
     </HeaderButtons>)
 
-const booked = (route, navigation) => {
+const booked = (route) => {
     const toggleHandler = route.params.toggleHandler
     const booked = route.params.booked
     const iconName = booked ? 'ios-star' : 'ios-star-outline'
